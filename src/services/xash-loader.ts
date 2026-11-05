@@ -194,36 +194,50 @@ class XashLoader {
       onError: XashLoader.removeReloadListener,
       module: {
         arguments: options.launchArgs,
-        locateFile: (path: string) => {
+       locateFile: (path: string) => {
           console.log(path);
+          let fileUrl = path;
           switch (path) {
             case 'xash.wasm':
-              return xashURL;
+              fileUrl = xashURL;
+              break;
             case 'filesystem_stdio.wasm':
-              return filesystemURL;
+              fileUrl = filesystemURL;
+              break;
             case 'cl_dlls/menu_emscripten_wasm32.wasm':
-              return menuURL;
+              fileUrl = menuURL;
+              break;
             case 'dlls/hl_emscripten_wasm32.wasm':
-              return HLServerURL;
-            // bshift fix
+              fileUrl = HLServerURL;
+              break;
             case 'dlls/bshift_emscripten_wasm32.wasm':
-              return HLServerURL;
-            //opfor fix
+              fileUrl = HLServerURL;
+              break;
             case 'dlls/opfor_emscripten_wasm32.wasm':
-              return HLServerURL;
+              fileUrl = HLServerURL;
+              break;
             case 'cl_dlls/client_emscripten_wasm32.wasm':
-              return HLClientURL;
-            // cs
+              fileUrl = HLClientURL;
+              break;
             case 'dlls/cs_emscripten_wasm32.wasm':
-              return CSServerURL;
+              fileUrl = CSServerURL;
+              break;
             case 'dlls/mp_emscripten_wasm32.wasm':
-              return CSServerURL;
+              fileUrl = CSServerURL;
+              break;
             case 'libref_webgl2.wasm':
-              return webgl2URL;
-            // Check this (not supported yet)
+              fileUrl = webgl2URL;
+              break;
             case 'libvgui_support.wasm':
-              return menuURL;
+              fileUrl = menuURL;
+              break;
           }
+
+          if (fileUrl && !fileUrl.startsWith('http') && !fileUrl.startsWith(import.meta.env.BASE_URL)) {
+            return import.meta.env.BASE_URL + fileUrl.replace(/^\//, '');
+          }
+          return fileUrl;
+        },
           return path;
         },
       },
@@ -361,15 +375,17 @@ class XashLoader {
     if (!selectedZip) return;
     return await getZip(selectedZip, publicDir, onProgress!);
   }
+public async fetchExtras(): Promise<ArrayBuffer> {
+    const extrasPath = (extrasURL.startsWith('http') || extrasURL.startsWith(import.meta.env.BASE_URL))
+      ? extrasURL
+      : import.meta.env.BASE_URL + extrasURL.replace(/^\//, '');
 
-  public async fetchExtras(): Promise<ArrayBuffer> {
-    const response = await fetch(extrasURL);
+    const response = await fetch(extrasPath);
     if (!response.ok) {
       throw new Error(`Failed to fetch extras.pk3: ${response.statusText}`);
     }
     return await response.arrayBuffer();
   }
-
   public async writeExtras(
     xash: Xash3D,
     extrasBuffer: ArrayBuffer,
