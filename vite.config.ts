@@ -15,7 +15,8 @@ export default defineConfig({
     rolldownOptions: {
       external: [
         "hlsdk-portable/cl_dlls/client_emscripten_wasm32.wasm?url",
-        "hlsdk-portable/dlls/hl_emscripten_wasm32.wasm?url"
+        "hlsdk-portable/dlls/hl_emscripten_wasm32.wasm?url",
+        "cs16-client/cl_dll/menu_emscripten_wasm32.wasm?url"
       ]
     }
   }
