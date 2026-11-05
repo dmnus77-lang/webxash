@@ -11,4 +11,11 @@ export default defineConfig({
       '/@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rolldownOptions: {
+      external: [
+        "hlsdk-portable/cl_dlls/client_emscripten_wasm32.wasm?url"
+      ]
+    }
+  }
 });
