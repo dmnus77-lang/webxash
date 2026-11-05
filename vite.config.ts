@@ -4,18 +4,11 @@ import * as path from 'node:path';
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/webxash/',
+  base: '/webxash/', // Asegúrate de que coincida con el nombre exacto de tu repo en minúsculas/mayúsculas
   plugins: [vue()],
   resolve: {
     alias: {
       '/@': path.resolve(__dirname, './src'),
     },
   },
-  build: {
-    rolldownOptions: {
-      external: [
-        /.*\.wasm\?url$/
-      ]
-    }
-  }
 });
